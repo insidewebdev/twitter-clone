@@ -23,7 +23,14 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Refresh token
   refreshToken RefreshToken[]
+
+  // Tweet
+  tweet Tweet[]
+
+  // MediaFiles
+  mediaFiles MediaFile[]
 }
 
 model RefreshToken {
@@ -35,4 +42,40 @@ model RefreshToken {
 
   userId String @db.ObjectId
   user   User   @relation(fields: [userId], references: [id])
+}
+
+model Tweet {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  text String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Author
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String @db.ObjectId
+
+  replyToId String? @db.ObjectId
+  replyTo   Tweet?  @relation("replies", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies   Tweet[] @relation("replies")
+
+  // MediaFiles
+  mediaFiles MediaFile[]
+}
+
+model MediaFile {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  url              String
+  providerPublicId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // User
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+
+  // Tweets
+  tweet   Tweet?  @relation(fields: [tweetId], references: [id])
+  tweetId String? @db.ObjectId
 }
