@@ -2,6 +2,7 @@ import formidable from "formidable"
 import { tweetTransformer } from "~~/server/transformers/tweet.js"
 import { createTweet } from "../../../db/tweets.js"
 import { createMediaFile } from "../../../db/mediaFiles.js"
+import { uploadToCloudinary } from "../../../utils/cloudinary.js"
 
 export default defineEventHandler(async (event) => {
 
@@ -25,12 +26,21 @@ export default defineEventHandler(async (event) => {
         authorId: userId
     }
 
+
+    if (fields.replyToId && fields.replyToId !== 'null') {
+        tweetData.replyToId = fields.replyToId
+    }
+
     const tweet = await createTweet(tweetData)
 
     const filePromises = Object.keys(files).map(async key => {
+        const file = files[key]
+
+        const media = await uploadToCloudinary(file.filepath)
+
         return createMediaFile({
-            url: '',
-            providerPublicId: 'random_id',
+            url: media.secure_url,
+            providerPublicId: media.public_id,
             userId: userId,
             tweetId: tweet.id
         })
@@ -39,7 +49,6 @@ export default defineEventHandler(async (event) => {
     await Promise.all(filePromises)
 
     return {
-        // tweet: tweetTransformer(tweet)
-        files
+        tweet: tweetTransformer(tweet)
     }
 })
