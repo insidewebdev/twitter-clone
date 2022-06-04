@@ -6,14 +6,3 @@ export const createTweet = (tweetData) => {
         data: tweetData
     })
 }
-
-export const getTweets = () => {
-    return prisma.tweet.findMany({
-        include: {
-            author: true,
-            mediaFiles: true,
-            replyTo: true,
-            replies: true
-        }
-    })
-}
