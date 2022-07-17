@@ -4,6 +4,9 @@ import { defineNuxtConfig } from 'nuxt'
 export default defineNuxtConfig({
     modules: ['@nuxtjs/tailwindcss'],
 
+    build: {
+        transpile: ['@heroicons/vue']
+    },
 
     runtimeConfig: {
         jwtAccessSecret: process.env.JWT_ACCESS_TOKEN_SECRET,
