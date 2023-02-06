@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     if (!username || !password) {
         return sendError(event, createError({
             statusCode: 400,
-            statusMessage: 'Ivalid params'
+            statusMessage: 'Invalid params'
         }))
     }
 
