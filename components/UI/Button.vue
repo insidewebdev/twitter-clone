@@ -19,11 +19,11 @@ const props = defineProps({
     },
     size: {
         type: String,
-        deafault: 'md'
+        default: 'md'
     },
     liquid: {
         type: Boolean,
-        deafult: false
+        default: false
     }
 })
 
